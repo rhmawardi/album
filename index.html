@@ -2,61 +2,292 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+      @import url("https://fonts.googleapis.com/css?family=Cute+Font&display=swap");
+      
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      body {
+        color: #333;
+        font-family: "Cute Font", cursive;
+        background: #3c3c3c;
+      }
+
+      .container {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .album {
+        transform-style: preserve-3d;
+        transition: 1s;
+        width: 100%;
+        max-width: 600px;
+        height: 700px;
+        position: relative;
+        margin: auto;
+      }
+
+      @media screen and (max-width: 768px) {
+        .album {
+          height: 500px;
+          transform: scale(0.8);
+          transform-origin: center center;
+        }
+
+        .album--open {
+          transform: translate(10px, 0) rotateX(35deg) rotateY(0deg) rotateZ(35deg) scale(0.6);
+        }
+
+        .content__title {
+          font-size: 48px !important;
+        }
+
+        .album__top-title {
+          font-size: 60px !important;
+        }
+
+        .content__img1,
+        .content__img2,
+        .content__img3 {
+          padding: 5px;
+        }
+
+        .content__img1 img,
+        .content__img2 img,
+        .content__img3 img {
+          max-width: 100%;
+          height: auto;
+          border-width: 5px;
+        }
+      }
+
+      /* Original styles preserved but modified for better mobile support */
+      .album__paper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transition: 1s;
+        transform-origin: 0 50%;
+        transform-style: preserve-3d;
+      }
+
+      .album__page {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background: #f1f0f0;
+      }
+
+      .album__page.front {
+        z-index: 2;
+        background: #fff;
+      }
+
+      .album__page.back {
+        background: #d4d3d3;
+      }
+
+      .album__paper.open {
+        transform: rotateY(-180deg);
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto 1fr 1fr;
+        height: 100%;
+        padding: 20px;
+        gap: 10px;
+      }
+
+      .content__title {
+        grid-column: 1 / -1;
+        font-size: 60px;
+        text-align: center;
+      }
+
+      .content__img1 {
+        grid-row: 2 / 4;
+        grid-column: 1;
+      }
+
+      .content__img2 {
+        grid-column: 2;
+        grid-row: 2;
+      }
+
+      .content__img3 {
+        grid-column: 2;
+        grid-row: 3;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 8px solid #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+
+      .album__shadow {
+        position: absolute;
+        bottom: -20px;
+        left: 10px;
+        right: 10px;
+        height: 20px;
+        background: rgba(0,0,0,0.2);
+        transform: rotateX(90deg);
+      }
+
+      .cat-mark {
+        width: 120px;
+        height: 100px;
+        background: #333;
+        border-radius: 50% 50% 45% 45%;
+        margin: 50px auto;
+        position: relative;
+      }
+
+      .cat-mark:before,
+      .cat-mark:after {
+        content: '';
+        position: absolute;
+        top: -15px;
+        width: 30px;
+        height: 50px;
+        background: #333;
+        border-radius: 50% 50% 0 0;
+      }
+
+      .cat-mark:before {
+        left: 0;
+        transform: rotate(-30deg);
+      }
+
+      .cat-mark:after {
+        right: 0;
+        transform: rotate(30deg);
+      }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/2.3.0-beta.6/vuetify.min.js"></script>
-    <title>My Album</title>
   </head>
   <body>
-    <!-- Tiktok meowish -->
     <div id="app">
       <div class="container">
         <div class="album" :class="{'album--open': isOpenedTop}">
-          <div
-            class="album__paper"
-            :style="{zIndex: isOpenedTop ? 0 : items.length + 1 }"
-            :class="{'open': isOpenedTop}"
-            @click="topOpen(isOpenedTop)">
-            <div
-              class="album__page front"
-              :style="{transform: `translateZ(0.${items.length + 1}px)`}">
-              <div>
-                <div class="album__top-title">Album</div>
-                <p class="txt-meowish">meowish</p>
-                <div class="cat-mark"></div>
-              </div>
+          <!-- Cover -->
+          <div class="album__paper" :class="{'open': isOpenedTop}" @click="topOpen">
+            <div class="album__page front">
+              <div class="album__top-title">Album</div>
+              <p class="txt-meowish">meowish</p>
+              <div class="cat-mark"></div>
             </div>
-            <div class="album__page back" :style="{zIndex: 0}"></div>
+            <div class="album__page back"></div>
           </div>
-          <div
-            class="album__paper"
-            v-for="(page, idx) in items"
-            :key="idx + 1"
-            :style="{zIndex: page.isOpen ? idx + 1 : items.length + 1 - (idx + 1) }"
-            :class="{'open': page.isOpen}"
-            @click="idx + 1 === items.length ? reset() : open(idx, page.isOpen)">
-            <div
-              class="album__page front"
-              :style="{transform: `translateZ(0.${items.length + 1 - (idx + 1)}px)`}">
+
+          <!-- Album pages -->
+          <div v-for="(page, idx) in items" 
+               :key="idx" 
+               class="album__paper"
+               :class="{'open': page.isOpen}"
+               @click="idx === items.length - 1 ? reset() : open(idx, page.isOpen)">
+            <div class="album__page front">
               <div class="content">
                 <div class="content__title">{{ page.title }}</div>
                 <div class="content__img1">
-                  <img :src="page.img1" />
-                  <div class="content__text">{{ idx + 1 }}</div>
+                  <img :src="page.img1" :alt="page.title + ' 1'">
                 </div>
-                <div class="content__img2"><img :src="page.img2" /></div>
-                <div class="content__img3"><img :src="page.img3" /></div>
+                <div class="content__img2">
+                  <img :src="page.img2" :alt="page.title + ' 2'">
+                </div>
+                <div class="content__img3">
+                  <img :src="page.img3" :alt="page.title + ' 3'">
+                </div>
               </div>
             </div>
-            <div class="album__page back" :style="{zIndex: idx + 1}"></div>
+            <div class="album__page back"></div>
           </div>
-          <div class="album__back"></div>
-          <div class="album__bottom"></div>
+
           <div class="album__shadow"></div>
         </div>
       </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            isOpenedTop: false,
+            items: [
+              {
+                img1: "images/cat couple.jpg",
+                img2: "images/cat couple2.jpg",
+                img3: "images/cat couple3.jpg",
+                title: "COUPLE",
+                isOpen: false,
+              },
+              {
+                img1: "images/cat cute.jpg",
+                img2: "images/cat cute 2.jpg",
+                img3: "images/cat cute 3.jpg",
+                title: "CUTE",
+                isOpen: false,
+              },
+              {
+                img1: "images/cat baby2.jpg",
+                img2: "images/cat baby.jpg",
+                img3: "images/cat baby3.jpg",
+                title: "BABIES",
+                isOpen: false,
+              },
+              {
+                img1: "images/cat sleep.jpg",
+                img2: "images/cat sleep2.jpg",
+                img3: "images/cat sleep 3.jpg",
+                title: "SLEEP",
+                isOpen: false,
+              },
+              {
+                img1: "images/CAT HERO1.jpg",
+                img2: "images/cat hero2.jpg",
+                img3: "images/cat hero3.jpg",
+                title: "HERO",
+                isOpen: false,
+              },
+            ],
+          };
+        },
+        methods: {
+          topOpen() {
+            this.isOpenedTop = !this.isOpenedTop;
+          },
+          open(idx, isOpen) {
+            if (this.isOpenedTop) {
+              this.items[idx].isOpen = !isOpen;
+            }
+          },
+          reset() {
+            this.items.forEach((item) => (item.isOpen = false));
+            this.isOpenedTop = false;
+          },
+        },
+      });
+    </script>
   </body>
 </html>
